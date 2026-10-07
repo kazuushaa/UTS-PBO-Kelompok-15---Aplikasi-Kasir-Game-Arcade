@@ -8,7 +8,7 @@ Reguler,Token TZ 500k,500000,1,500
 Reguler,Token TZ 1000k,1000000,1,1000
 Bonus,Paket Promo September,0,1,PROMO-SEPT,25
 Bonus,Paket Akhir Tahun,0,1,PROMO-DES,50
-Bonus,Paket Bonus 100k,0,1,PROMO-PAKET BONUS 100k,50
-Bonus,Paket Bonus 200k,0,1,PROMO-PAKET BONUS 200k,125
-Bonus,Paket Bonus 500k,0,1,PROMO-PAKET BONUS 500k,300
-Bonus,Paket Bonus 1000k,0,1,PROMO-PAKET BONUS 1000k,900
+Bonus,Paket Bonus 100k,0,1,PROMO-100k,50
+Bonus,Paket Bonus 200k,0,1,PROMO-200k,125
+Bonus,Paket Bonus 500k,0,1,PROMO-500k,300
+Bonus,Paket Bonus 1000k,0,1,PROMO-1000k,900

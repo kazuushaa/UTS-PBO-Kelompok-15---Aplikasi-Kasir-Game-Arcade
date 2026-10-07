@@ -1,0 +1,6 @@
+Aldi,Pos1
+Aldi,Pos2
+Sha,Pos1
+Sha,Pos2
+Nicky,Pos1
+Nicky,Pos2

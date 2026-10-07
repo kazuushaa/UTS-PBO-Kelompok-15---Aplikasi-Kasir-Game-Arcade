@@ -42,4 +42,6 @@ public abstract class Kartu  {
     public int getSubtotal() {
         return harga * qty;
     }
+
+    public abstract String getDetailItem();
 }

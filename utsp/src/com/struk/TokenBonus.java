@@ -31,4 +31,9 @@ public class TokenBonus extends Kartu {
     public int getBonusToken() {
         return bonusToken;
     }
+
+    @Override
+    public String getDetailItem() {
+        return "Promo Diterapkan: " + this.jenisPromo;
+    }
 }

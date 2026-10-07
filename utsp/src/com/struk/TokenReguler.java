@@ -19,4 +19,9 @@ public class TokenReguler extends Kartu {
     public int getJumlahToken() {
         return jumlahToken;
     }
+    
+    @Override
+    public String getDetailItem() {
+        return "Item Reguler (Tidak ada promo)";
+    }
 }

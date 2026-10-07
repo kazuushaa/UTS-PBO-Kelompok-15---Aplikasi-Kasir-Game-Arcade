@@ -1,7 +1,5 @@
-import com.struk.CetakStruk;
 import com.struk.Kartu;
 import com.struk.Operator;
-import com.struk.Struk;
 import com.struk.TokenBonus;
 import com.struk.TokenReguler;
 import com.struk.Transaksi;
@@ -18,8 +16,9 @@ public class App {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         List<Kartu> katalogProduk = new ArrayList<>();
+        List<Operator> daftarOperator = new ArrayList<>();
 
-        // 1. BACA DATA KATALOG DARI FILE .TXT
+// 1. BACA DATA KATALOG PRODUK DAN DATA OPERATOR DARI FILE .TXT
         try (BufferedReader br = new BufferedReader(new FileReader("katalog_token.txt"))) {
             String baris;
             while ((baris = br.readLine()) != null) {
@@ -45,13 +44,39 @@ public class App {
             return; // Hentikan program jika gagal baca file
         }
 
-        // 2. INISIALISASI TRANSAKSI OLEH KASIR
-        Operator op1 = new Operator();
 
-        System.out.println("\n--- METODE TRANSAKSI ---");
+        ////
+        try (BufferedReader br = new BufferedReader(new FileReader("data_operator.txt"))) {
+            String baris;
+            while ((baris = br.readLine()) != null) {
+                String[] data = baris.split(",");
+                
+                String namaOperator = data[0];
+                String terminal = data[1];
+
+                daftarOperator.add(new Operator(namaOperator, terminal));
+            }
+        } catch (IOException e) {
+            System.out.println("Gagal membaca file data_operator.txt: " + e.getMessage());
+            System.out.println("Pastikan file .txt ada di direktori yang sama.");
+            return; // Hentikan program jika gagal baca file
+        }
+
+
+// 2. INISIALISASI TRANSAKSI OLEH KASIR
+        //Operator op1 = new Operator();
+        System.out.println("------ PILIH OPERATOR ------");
+        for (int i = 0; i < daftarOperator.size(); i++) {
+            Operator operator = daftarOperator.get(i);
+            System.out.println((i + 1) + ". " + operator.getNamaOperator() + " - Terminal: " + operator.getTerminal());
+        }
+        System.out.print("Pilih Operator (1-" + daftarOperator.size() + "): ");
+            int pilihanOperator = input.nextInt();
+
+        System.out.println("\n------ METODE TRANSAKSI ------");
         System.out.println("1. Tunai");
-        System.out.println("2. QRIS");
-        System.out.print("Pilih Metode Transaksi ");
+        System.out.println("2. Cashless");
+        System.out.print("Pilih Metode Transaksi : ");
         int pilihantransaksi = input.nextInt();
 
         Transaksi trx1;
@@ -60,23 +85,24 @@ public class App {
         } else {
             trx1 = new TransaksiQR(); // Mengisi objek anak QRIS
         }
-        trx1.setObjOperator(op1);
+        trx1.setObjOperator(daftarOperator.get(pilihanOperator - 1));
 
-        System.out.println("=================================");
+        System.out.println("\n=================================");
         System.out.println("  SISTEM KASIR PENJUALAN TOKEN   ");
         System.out.println("=================================");
         
         boolean lanjutBelanja = true;
 
-        // 3. LOOPING MENU UNTUK OPERATOR
+// 3. LOOPING MENU UNTUK OPERATOR
         while (lanjutBelanja) {
-            System.out.println("\n--- KATALOG PRODUK ---");
+            System.out.println("\n------ KATALOG PRODUK ------");
             for (int i = 0; i < katalogProduk.size(); i++) {
                 Kartu item = katalogProduk.get(i);
                 System.out.println((i + 1) + ". " + item.getNamaItem() + " - Rp" + item.getHarga());
+                System.out.println("   Info: " + item.getDetailItem());
             }
             System.out.println("0. Selesai & Lanjut Pembayaran");
-            System.out.println("----------------------");
+            System.out.println("-----------------------------");
 
             System.out.print("Pilih nomor produk (0-" + katalogProduk.size() + "): ");
             int pilihan = input.nextInt();
@@ -99,18 +125,19 @@ public class App {
                     trx1.tambahBarang(new TokenBonus(tb.getNamaItem(), tb.getHarga(), qtyBeli, tb.getJenisPromo(), tb.getBonusToken()));
                 }
                 System.out.println(">> " + produkPilihan.getNamaItem() + " sebanyak " + qtyBeli + " berhasil ditambahkan!");
+                System.out.println("   Keterangan: " + produkPilihan.getDetailItem());
             } else {
                 System.out.println(">> Pilihan tidak valid, silakan ulangi.");
             }
         }
 
-        // 4. PROSES PEMBAYARAN JIKA ADA BARANG DI KERANJANG
+// 4. PROSES PEMBAYARAN JIKA ADA BARANG DI KERANJANG
         if (trx1.getListBarang().isEmpty()) {
             System.out.println("\nTidak ada barang yang dibeli. Transaksi dibatalkan.");
         } else {
             int totalBelanja = trx1.hitungTotal(); 
-            System.out.println("\n=================================");
-            System.out.println("TOTAL BELANJA : Rp" + totalBelanja);
+            System.out.println("\n====================================");
+            System.out.println("TOTAL         : Rp" + totalBelanja);
         if (trx1 instanceof TransaksiTunai) {
             TransaksiTunai tunai = (TransaksiTunai) trx1;
             System.out.print("Nominal Bayar : Rp");
@@ -125,8 +152,7 @@ public class App {
         }
             
             // 5. CETAK STRUK MENGGUNAKAN INTERFACE DAN KELAS STRUK
-            CetakStruk printer = new Struk(); 
-            printer.cetak(trx1); 
+            trx1.cetakStruk();
         }
         input.close();
     }
